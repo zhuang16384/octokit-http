@@ -29,6 +29,7 @@ frontend/npm-debug.log
 frontend/yarn-error.log
 frontend/pnpm-debug.log
 frontend/.svelte-kit
+frontend/bindings
 
 # Local / Scratch
 tmp/
