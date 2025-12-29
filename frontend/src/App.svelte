@@ -1,51 +1,67 @@
 <script lang="ts">
-  import {Events} from "@wailsio/runtime";
-  import {GreetService} from "../bindings/changeme";
+  import RequestPanel from "./components/request-panel.svelte";
+  import ResponsePanel from "./components/response-panel.svelte";
+  import { SendRequest } from "../bindings/changeme/services/requestservice";
 
-  let name: string = '';
-  let result: string = 'Please enter your name below 👇';
-  let time: string = 'Listening for Time event...';
+  let loading = $state(false);
+  let responseBody = $state("");
+  let status = $state("");
+  let time = $state(0);
 
-  const doGreet = (): void => {
-    let localName = name;
-    if (!localName) {
-      localName = 'anonymous';
+  async function handleSend(url: string, method: string) {
+    loading = true;
+    status = "";
+    try {
+      const res = await SendRequest({
+        method: method,
+        url: url,
+        headers: {},
+        body: "",
+      });
+
+      // Attempt format JSON
+      try {
+        responseBody = JSON.stringify(JSON.parse(res.body), null, 2);
+      } catch {
+        responseBody = res.body;
+      }
+
+      status = `${res.statusCode} ${res.status}`;
+      time = res.time;
+    } catch (err) {
+      console.error(err);
+      responseBody = "Error: " + String(err);
+    } finally {
+      loading = false;
     }
-    GreetService.Greet(localName).then((resultValue: string) => {
-      result = resultValue;
-    }).catch((err: any) => {
-      console.log(err);
-    });
   }
-
-  Events.On('time', (timeValue: any) => {
-    time = timeValue.data;
-  });
 </script>
 
-<div class="container">
-  <div>
-    <span data-wml-openURL="https://wails.io">
-      <img src="/wails.png" class="logo" alt="Wails logo"/>
-    </span>
-    <span data-wml-openURL="https://svelte.dev">
-      <img src="/svelte.svg" class="logo svelte" alt="Svelte logo"/>
-    </span>
-  </div>
-  <h1>Wails + Svelte</h1>
-  <div aria-label="result" class="result">{result}</div>
-  <div class="card">
-    <div class="input-box">
-      <input aria-label="input" class="input" bind:value={name} type="text" autocomplete="off"/>
-      <button aria-label="greet-btn" class="btn" on:click={doGreet}>Greet</button>
+<div class="flex flex-col h-screen bg-background text-foreground dark">
+  <div class="border-b p-2 flex items-center justify-between">
+    <h1 class="font-bold text-lg px-2">Project Pebble</h1>
+    <div class="text-xs text-muted-foreground px-2">
+      {#if status}
+        <span class={status.startsWith("2") ? "text-green-500" : "text-red-500"}
+          >{status}</span
+        >
+        <span class="mx-2">•</span>
+        <span>{time}ms</span>
+      {/if}
     </div>
   </div>
-  <div class="footer">
-    <div><p>Click on the Wails logo to learn more</p></div>
-    <div><p>{time}</p></div>
+
+  <RequestPanel onSend={handleSend} {loading} />
+
+  <div class="flex-1 overflow-hidden min-h-0 relative">
+    {#if responseBody}
+      <ResponsePanel content={responseBody} />
+    {:else}
+      <div
+        class="flex items-center justify-center h-full text-muted-foreground"
+      >
+        No response yet
+      </div>
+    {/if}
   </div>
 </div>
-
-<style>
-  /* Put your standard CSS here */
-</style>
