@@ -4,3 +4,34 @@ frontend/dist
 frontend/node_modules
 build/linux/appimage/build
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
+
+# General
+.DS_Store
+.idea
+.vscode
+*.log
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Node / Frontend
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+frontend/npm-debug.log
+frontend/yarn-error.log
+frontend/pnpm-debug.log
+frontend/.svelte-kit
+
+# Local / Scratch
+tmp/
+temp/
+scratch/
+local/
