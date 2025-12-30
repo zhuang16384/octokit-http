@@ -1,0 +1,3 @@
+# Mark NSIS files as vendored to exclude them from GitHub language stats
+build/windows/nsis/*.nsi linguist-vendored
+build/windows/nsis/*.nsh linguist-vendored
