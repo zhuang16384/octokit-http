@@ -1,10 +1,10 @@
 package main
 
 import (
-	"changeme/services"
 	"embed"
 	_ "embed"
 	"log"
+	"octokit-http/services"
 	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"

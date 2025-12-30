@@ -1,4 +1,4 @@
-module changeme
+module octokit-http
 
 go 1.24.0
 
